@@ -417,7 +417,7 @@ GameObject:
   - component: {fileID: 972729290}
   - component: {fileID: 972729289}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Avatar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -490,13 +490,14 @@ GameObject:
   - component: {fileID: 1004677937}
   - component: {fileID: 1004677939}
   - component: {fileID: 1004677938}
+  - component: {fileID: 1004677940}
   m_Layer: 5
   m_Name: Item
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1004677937
 RectTransform:
   m_ObjectHideFlags: 0
@@ -555,6 +556,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1004677936}
   m_CullTransparentMesh: 0
+--- !u!114 &1004677940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004677936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7c481e7a64088442bf30ffc10bb5fee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1074153892
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,7 +647,7 @@ GameObject:
   - component: {fileID: 1255955088}
   - component: {fileID: 1255955090}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Message
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -657,7 +670,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 50, y: -20}
-  m_SizeDelta: {x: -140, y: 0}
+  m_SizeDelta: {x: -140, y: -67}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1255955088
 MonoBehaviour:
@@ -726,6 +739,7 @@ GameObject:
   - component: {fileID: 1626359870}
   - component: {fileID: 1626359869}
   - component: {fileID: 1626359868}
+  - component: {fileID: 1626359871}
   m_Layer: 5
   m_Name: Scroll View
   m_TagString: Untagged
@@ -820,6 +834,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1626359866}
   m_CullTransparentMesh: 0
+--- !u!114 &1626359871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1626359866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c81fdcbe182a02469bf768a0ac0770f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item: {fileID: 1004677937}
 --- !u!1 &1700754023
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,7 +958,7 @@ GameObject:
   - component: {fileID: 1904377144}
   - component: {fileID: 1904377143}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
