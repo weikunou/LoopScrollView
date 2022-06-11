@@ -55,6 +55,8 @@ public class LoopScroll : MonoBehaviour
         }
 
         Debug.Log("item count " + itemList.Count);
+
+        CountItemPos();
     }
 
     /// <summary>
@@ -66,5 +68,24 @@ public class LoopScroll : MonoBehaviour
         obj.SetActive(true);
         obj.GetComponent<Item>().UpdateSelf(message);
         itemList.Add(obj.transform);
+    }
+
+    /// <summary>
+    /// 计算每条内容的位置和content的总高度
+    /// </summary>
+    public void CountItemPos()
+    {
+        // 计算 item 位置
+        float pos = 0;
+        float space = 20; // 间隔
+        foreach(Transform item in itemList)
+        {
+            RectTransform item_rect = item.GetComponent<RectTransform>();
+            item_rect.anchoredPosition = new Vector2(0, pos);
+            pos = pos - item_rect.rect.height - space;
+        }
+        // 计算 content 高度
+        float full_heihgt = (item.GetComponent<RectTransform>().rect.height + space) * itemList.Count;
+        content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, full_heihgt);
     }
 }
