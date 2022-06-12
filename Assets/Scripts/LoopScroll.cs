@@ -34,8 +34,25 @@ public class LoopScroll : MonoBehaviour
             data.Add("这是一条消息 " + i);
         }
 
+        Init();
         // 刷新视图
-        Refresh(data);
+        // Refresh(data);
+    }
+
+    /// <summary>
+    /// 额外的item数量
+    /// </summary>
+    public int extra;
+
+    public void Init()
+    {
+        float viewport_height = scrollRect.viewport.rect.height;
+        int num = Mathf.CeilToInt(viewport_height / item.rect.height);
+        int sum = num + extra;
+        for(int  i = 0; i < sum; i++)
+        {
+            AddItem("");
+        }
     }
 
     /// <summary>
@@ -79,6 +96,6 @@ public class LoopScroll : MonoBehaviour
         }
         // 计算 content 高度
         float full_heihgt = (item.rect.height + space) * itemList.Count;
-        scrollRect.content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, full_heihgt);
+        scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
     }
 }
