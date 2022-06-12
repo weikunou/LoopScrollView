@@ -8,7 +8,7 @@ public class LoopScroll : MonoBehaviour
     /// <summary>
     /// 数据项
     /// </summary>
-    public Transform item;
+    public RectTransform item;
 
     /// <summary>
     /// 滚动视图
@@ -16,22 +16,16 @@ public class LoopScroll : MonoBehaviour
     ScrollRect scrollRect;
 
     /// <summary>
-    /// 视图内容
-    /// </summary>
-    Transform content;
-
-    /// <summary>
     /// 预制体列表
     /// </summary>
-    /// <typeparam name="Transform">预制体的坐标信息</typeparam>
+    /// <typeparam name="RectTransform">预制体的坐标信息</typeparam>
     /// <returns></returns>
-    List<Transform> itemList = new List<Transform>();
+    List<RectTransform> itemList = new List<RectTransform>();
 
     void Start()
     {
         // 获取组件
         scrollRect = GetComponent<ScrollRect>();
-        content = scrollRect.transform.Find("Viewport/Content");
 
         // 构造数据
         List<string> data = new List<string>();
@@ -64,10 +58,10 @@ public class LoopScroll : MonoBehaviour
     /// </summary>
     public void AddItem(string message)
     {
-        GameObject obj = Instantiate(item.gameObject, content.transform);
+        GameObject obj = Instantiate(item.gameObject, scrollRect.content.transform);
         obj.SetActive(true);
         obj.GetComponent<Item>().UpdateSelf(message);
-        itemList.Add(obj.transform);
+        itemList.Add(obj.GetComponent<RectTransform>());
     }
 
     /// <summary>
@@ -78,14 +72,13 @@ public class LoopScroll : MonoBehaviour
         // 计算 item 位置
         float pos = 0;
         float space = 20; // 间隔
-        foreach(Transform item in itemList)
+        foreach(RectTransform item in itemList)
         {
-            RectTransform item_rect = item.GetComponent<RectTransform>();
-            item_rect.anchoredPosition = new Vector2(0, pos);
-            pos = pos - item_rect.rect.height - space;
+            item.anchoredPosition = new Vector2(0, pos);
+            pos = pos - item.rect.height - space;
         }
         // 计算 content 高度
-        float full_heihgt = (item.GetComponent<RectTransform>().rect.height + space) * itemList.Count;
-        content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, full_heihgt);
+        float full_heihgt = (item.rect.height + space) * itemList.Count;
+        scrollRect.content.GetComponent<RectTransform>().sizeDelta = new Vector2(0, full_heihgt);
     }
 }
