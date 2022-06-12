@@ -848,6 +848,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item: {fileID: 1004677937}
   extra: 0
+  headItem: 0
+  tailItem: 0
+  headData: 0
+  tailData: 0
 --- !u!1 &1700754023
 GameObject:
   m_ObjectHideFlags: 0

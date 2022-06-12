@@ -22,6 +22,13 @@ public class LoopScroll : MonoBehaviour
     /// <returns></returns>
     List<RectTransform> itemList = new List<RectTransform>();
 
+    /// <summary>
+    /// 数据列表
+    /// </summary>
+    /// <typeparam name="string">数据类型</typeparam>
+    /// <returns></returns>
+    List<string> dataList = new List<string>();
+
     void Start()
     {
         // 获取组件
@@ -36,7 +43,7 @@ public class LoopScroll : MonoBehaviour
 
         Init();
         // 刷新视图
-        // Refresh(data);
+        Refresh(data);
     }
 
     /// <summary>
@@ -49,23 +56,40 @@ public class LoopScroll : MonoBehaviour
         float viewport_height = scrollRect.viewport.rect.height;
         int num = Mathf.CeilToInt(viewport_height / item.rect.height);
         int sum = num + extra;
+        tailItem = sum - 1;
+        tailData = sum - 1;
         for(int  i = 0; i < sum; i++)
         {
-            AddItem("");
+            AddItem();
         }
     }
+
+    /// <summary>
+    /// 头节点索引
+    /// </summary>
+    public int headItem;
+    
+    /// <summary>
+    /// 尾节点索引
+    /// </summary>
+    public int tailItem;
+
+    /// <summary>
+    /// 头数据索引
+    /// </summary>
+    public int headData;
+
+    /// <summary>
+    /// 尾数据索引
+    /// </summary>
+    public int tailData;
 
     /// <summary>
     /// 刷新视图
     /// </summary>
     public void Refresh(List<string> data)
     {
-        for(int i = 0; i < data.Count; i++)
-        {
-            AddItem(data[i]);
-        }
-
-        Debug.Log("item count " + itemList.Count);
+        dataList = data;
 
         CountItemPos();
     }
@@ -73,11 +97,10 @@ public class LoopScroll : MonoBehaviour
     /// <summary>
     /// 添加单条内容
     /// </summary>
-    public void AddItem(string message)
+    public void AddItem()
     {
         GameObject obj = Instantiate(item.gameObject, scrollRect.content.transform);
         obj.SetActive(true);
-        obj.GetComponent<Item>().UpdateSelf(message);
         itemList.Add(obj.GetComponent<RectTransform>());
     }
 
@@ -89,10 +112,19 @@ public class LoopScroll : MonoBehaviour
         // 计算 item 位置
         float pos = 0;
         float space = 20; // 间隔
-        foreach(RectTransform item in itemList)
+
+        int currentItem = headItem; // 从头节点的位置开始
+        for(int i = headData; i <= tailData; i++)
         {
-            item.anchoredPosition = new Vector2(0, pos);
+            // 如果提前到达末尾，则返回头部继续
+            if(currentItem >= itemList.Count)
+            {
+                currentItem = 0;
+            }
+            itemList[currentItem].anchoredPosition = new Vector2(0, pos);
+            itemList[currentItem].GetComponent<Item>().UpdateSelf(dataList[i]);
             pos = pos - item.rect.height - space;
+            currentItem++;
         }
         // 计算 content 高度
         float full_heihgt = (item.rect.height + space) * itemList.Count;
