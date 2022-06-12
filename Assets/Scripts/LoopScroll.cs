@@ -34,6 +34,9 @@ public class LoopScroll : MonoBehaviour
         // 获取组件
         scrollRect = GetComponent<ScrollRect>();
 
+        // 添加监听滚动事件
+        scrollRect.onValueChanged.AddListener(OnScrollChanged);
+
         // 构造数据
         List<string> data = new List<string>();
         for(int i = 0; i < 100; i++)
@@ -129,5 +132,14 @@ public class LoopScroll : MonoBehaviour
         // 计算 content 高度
         float full_heihgt = (item.rect.height + space) * itemList.Count;
         scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
+    }
+
+    /// <summary>
+    /// 滚动回调
+    /// </summary>
+    /// <param name="normalisedPos">归一化位置</param>
+    public void OnScrollChanged(Vector2 normalisedPos)
+    {
+        Debug.Log(normalisedPos);
     }
 }
