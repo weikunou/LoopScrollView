@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Text;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -39,9 +40,12 @@ public class LoopScroll : MonoBehaviour
 
         // 构造数据
         List<string> data = new List<string>();
+        StringBuilder stringBuilder = new StringBuilder();
+        
         for(int i = 0; i < 100; i++)
         {
-            data.Add("这是一条消息 " + i);
+            stringBuilder.Append(string.Format("这是 {0} 条消息 ", i));
+            data.Add(stringBuilder.ToString());
         }
 
         Init();
@@ -126,11 +130,12 @@ public class LoopScroll : MonoBehaviour
             }
             itemList[currentItem].anchoredPosition = new Vector2(0, pos);
             itemList[currentItem].GetComponent<Item>().UpdateSelf(dataList[i]);
-            pos = pos - item.rect.height - space;
+            // 这里的 pos 算出来刚好是下一个 Item 出现的 PosY 位置，正好是 Content 的高度
+            pos = pos - itemList[currentItem].rect.height - space;
             currentItem++;
         }
         // 计算 content 高度
-        float full_heihgt = (item.rect.height + space) * itemList.Count;
+        float full_heihgt = Mathf.Abs(pos);
         scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
     }
 
@@ -171,7 +176,6 @@ public class LoopScroll : MonoBehaviour
             // 防止数据列表越界
             if(tailData >= dataList.Count - 1)
             {
-                Debug.Log("滑动到最底部了");
                 return;
             }
 
@@ -185,12 +189,14 @@ public class LoopScroll : MonoBehaviour
             // 节点间隔，后续可以改成全局变量设置
             float space = 20;
 
+            // 调整一下代码的执行顺序，要在计算 pos_y 之前，先更新 Item 高度
+            itemList[headItem].GetComponent<Item>().UpdateSelf(dataList[tailData]);
+
             // 在尾节点的位置上，往下移动尾节点的高度和间隔
             pos_y -= (itemList[tailItem].rect.height + space);
 
             // 将新的位置赋值给头节点，并使用尾数据
             itemList[headItem].anchoredPosition = new Vector2(0, pos_y);
-            itemList[headItem].GetComponent<Item>().UpdateSelf(dataList[tailData]);
 
             // 尾节点索引移动到头节点索引，头节点索引往后移动一个单位，并作越界处理
             tailItem = headItem;
@@ -210,7 +216,6 @@ public class LoopScroll : MonoBehaviour
             // 防止数据列表越界
             if(headData <= 0)
             {
-                Debug.Log("滑动到最顶部了");
                 return;
             }
 
@@ -224,12 +229,19 @@ public class LoopScroll : MonoBehaviour
             // 节点间隔，后续可以改成全局变量设置
             float space = 20;
 
+            // 调整一下代码的执行顺序，要在 Item 高度更新之前，先减去原来的高度
+            // content 高度减少一个尾节点高度和间隔
+            float full_heihgt = scrollRect.content.rect.height - (itemList[tailItem].rect.height + space);
+            scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
+
+            // 调整一下代码的执行顺序，要在计算 pos_y 之前，先更新 Item 高度
+            itemList[tailItem].GetComponent<Item>().UpdateSelf(dataList[headData]);
+
             // 在头节点的位置上，往上移动尾节点的高度和间隔
             pos_y += (itemList[tailItem].rect.height + space);
 
             // 将新的位置赋值给尾节点，并使用头数据
             itemList[tailItem].anchoredPosition = new Vector2(0, pos_y);
-            itemList[tailItem].GetComponent<Item>().UpdateSelf(dataList[headData]);
 
             // 头节点索引移动到尾节点索引，尾节点索引往前移动一个单位，并作越界处理
             headItem = tailItem;
@@ -238,10 +250,6 @@ public class LoopScroll : MonoBehaviour
             {
                 tailItem = itemList.Count - 1;
             }
-
-            // content 高度减少一个尾节点高度和间隔
-            float full_heihgt = scrollRect.content.rect.height - (itemList[tailItem].rect.height + space);
-            scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
         }
     }
 }
