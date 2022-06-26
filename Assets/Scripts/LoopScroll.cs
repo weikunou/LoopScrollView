@@ -140,6 +140,108 @@ public class LoopScroll : MonoBehaviour
     /// <param name="normalisedPos">归一化位置</param>
     public void OnScrollChanged(Vector2 normalisedPos)
     {
-        Debug.Log(normalisedPos);
+        // Debug.Log(normalisedPos);
+        OnVerticalChanged();
+    }
+
+    /// <summary>
+    /// 垂直滚动
+    /// </summary>
+    public void OnVerticalChanged()
+    {
+        // content 的 y 坐标
+        float content_y = scrollRect.content.anchoredPosition.y;
+
+        // 获取头节点索引，并作越界处理
+        int currentItem = headItem;
+        if(currentItem + 1 >= itemList.Count)
+        {
+            currentItem = -1;
+        }
+
+        // 第二个 item 的 y 坐标
+        float next_item_y = itemList[currentItem + 1].anchoredPosition.y;
+
+        // 第一个 item 的 y 坐标
+        float head_item_y = itemList[headItem].anchoredPosition.y;
+
+        // 当第一个 Item 移动到视图外，也就是第二个 Item 移动到顶部了
+        if(content_y > Mathf.Abs(next_item_y))
+        {
+            // 防止数据列表越界
+            if(tailData >= dataList.Count - 1)
+            {
+                Debug.Log("滑动到最底部了");
+                return;
+            }
+
+            // 数据列表区间往后移动一个单位
+            headData++;
+            tailData++;
+
+            // 先获取尾节点的 y 坐标位置
+            float pos_y = itemList[tailItem].anchoredPosition.y;
+
+            // 节点间隔，后续可以改成全局变量设置
+            float space = 20;
+
+            // 在尾节点的位置上，往下移动尾节点的高度和间隔
+            pos_y -= (itemList[tailItem].rect.height + space);
+
+            // 将新的位置赋值给头节点，并使用尾数据
+            itemList[headItem].anchoredPosition = new Vector2(0, pos_y);
+            itemList[headItem].GetComponent<Item>().UpdateSelf(dataList[tailData]);
+
+            // 尾节点索引移动到头节点索引，头节点索引往后移动一个单位，并作越界处理
+            tailItem = headItem;
+            headItem++;
+            if(headItem >= itemList.Count)
+            {
+                headItem = 0;
+            }
+
+            // content 高度增加一个尾节点高度和间隔
+            float full_heihgt = scrollRect.content.rect.height + (itemList[tailItem].rect.height + space);
+            scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
+        }
+        // 当第一个 Item 移动到视图内
+        else if(content_y < Mathf.Abs(head_item_y))
+        {
+            // 防止数据列表越界
+            if(headData <= 0)
+            {
+                Debug.Log("滑动到最顶部了");
+                return;
+            }
+
+            // 数据列表区间往前移动一个单位
+            headData--;
+            tailData--;
+
+            // 先获取头节点的 y 坐标位置
+            float pos_y = itemList[headItem].anchoredPosition.y;
+
+            // 节点间隔，后续可以改成全局变量设置
+            float space = 20;
+
+            // 在头节点的位置上，往上移动尾节点的高度和间隔
+            pos_y += (itemList[tailItem].rect.height + space);
+
+            // 将新的位置赋值给尾节点，并使用头数据
+            itemList[tailItem].anchoredPosition = new Vector2(0, pos_y);
+            itemList[tailItem].GetComponent<Item>().UpdateSelf(dataList[headData]);
+
+            // 头节点索引移动到尾节点索引，尾节点索引往前移动一个单位，并作越界处理
+            headItem = tailItem;
+            tailItem--;
+            if(tailItem < 0)
+            {
+                tailItem = itemList.Count - 1;
+            }
+
+            // content 高度减少一个尾节点高度和间隔
+            float full_heihgt = scrollRect.content.rect.height - (itemList[tailItem].rect.height + space);
+            scrollRect.content.sizeDelta = new Vector2(0, full_heihgt);
+        }
     }
 }
